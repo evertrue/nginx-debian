@@ -1,3 +1,10 @@
+nginx (1.4.6-1evertrue1.0) unstable; urgency=medium
+
+  [ Eric Herot ]
+  * Add module: nginx_upstream_check_module
+
+ -- Eric Herot <eric.herot@evertrue.com>  Mon, 21 Sep 2015 18:22:55 -0400
+
 nginx (1.4.6-1) unstable; urgency=medium
 
   [ Christos Trochalakis ]
