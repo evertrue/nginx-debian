@@ -1,4 +1,4 @@
-nginx (1.4.6-1evertrue1.0) unstable; urgency=medium
+nginx (1.4.6-2evertrue1.0) unstable; urgency=medium
 
   [ Eric Herot ]
   * Add module: nginx_upstream_check_module
