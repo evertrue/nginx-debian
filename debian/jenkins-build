@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -ex
+
+if [ -z "${SIGNING_KEY_FINGERPRINT}" ]; then
+  echo "SIGNING_KEY_FINGERPRINT required"
+  exit 1
+fi
+
+if [ -z "${SIGNING_KEY_PASSPHRASE}" ]; then
+  echo "SIGNING_KEY_PASSPHRASE required"
+  exit 1
+fi
+
+sudo /usr/lib/pbuilder/pbuilder-satisfydepends --control control
+
+PACKAGE_VERSION=`dpkg-parsechangelog --show-field Version`
+
+# Do the build
+dpkg-buildpackage -b -uc
+
+dpkg-sig \
+  -k $SIGNING_KEY_FINGERPRINT \
+  -g "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  --sign evertrue \
+  ../nginx-full_${PACKAGE_VERSION}_amd64.deb
+
+dpkg-sig \
+  -k $SIGNING_KEY_FINGERPRINT \
+  -g "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  --sign evertrue \
+  ../nginx-common_${PACKAGE_VERSION}_amd64.deb
+
+# Upload built artifacts to S3
+/opt/rbenv/shims/deb-s3 upload \
+  --arch amd64 \
+  --sign $SIGNING_KEY_FINGERPRINT \
+  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  --prefix debian-repo \
+  --bucket ops.evertrue.com \
+  ../nginx-full_${PACKAGE_VERSION}_amd64.deb
+  
+/opt/rbenv/shims/deb-s3 upload \
+  --arch amd64 \
+  --sign $SIGNING_KEY_FINGERPRINT \
+  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  --prefix debian-repo \
+  --bucket ops.evertrue.com \
+  ../nginx-common_${PACKAGE_VERSION}_amd64.deb
