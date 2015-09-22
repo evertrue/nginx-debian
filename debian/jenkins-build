@@ -17,33 +17,33 @@ sudo /usr/lib/pbuilder/pbuilder-satisfydepends --control control
 PACKAGE_VERSION=`dpkg-parsechangelog --show-field Version`
 
 # Do the build
-dpkg-buildpackage -b -uc
+# dpkg-buildpackage -b -uc
 
-dpkg-sig \
+echo "${SIGNING_KEY_PASSPHRASE}" | dpkg-sig \
   -k $SIGNING_KEY_FINGERPRINT \
-  -g "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  -g "--passphrase-fd 0" \
   --sign evertrue \
   ../nginx-full_${PACKAGE_VERSION}_amd64.deb
 
-dpkg-sig \
+echo "${SIGNING_KEY_PASSPHRASE}" | dpkg-sig \
   -k $SIGNING_KEY_FINGERPRINT \
-  -g "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  -g "--passphrase-fd 0" \
   --sign evertrue \
   ../nginx-common_${PACKAGE_VERSION}_amd64.deb
 
 # Upload built artifacts to S3
-/opt/rbenv/shims/deb-s3 upload \
+echo "${SIGNING_KEY_PASSPHRASE}" | /opt/rbenv/shims/deb-s3 upload \
   --arch amd64 \
   --sign $SIGNING_KEY_FINGERPRINT \
-  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  --gpg-options "--passphrase-fd 0" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
   ../nginx-full_${PACKAGE_VERSION}_amd64.deb
   
-/opt/rbenv/shims/deb-s3 upload \
+echo "${SIGNING_KEY_PASSPHRASE}" | /opt/rbenv/shims/deb-s3 upload \
   --arch amd64 \
   --sign $SIGNING_KEY_FINGERPRINT \
-  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE}" \
+  --gpg-options "--passphrase-fd 0" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
   ../nginx-common_${PACKAGE_VERSION}_amd64.deb
