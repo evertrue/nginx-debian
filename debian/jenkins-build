@@ -17,7 +17,7 @@ sudo /usr/lib/pbuilder/pbuilder-satisfydepends --control control
 PACKAGE_VERSION=`dpkg-parsechangelog --show-field Version`
 
 # Do the build
-# dpkg-buildpackage -b -uc
+dpkg-buildpackage -b -uc
 
 echo "${SIGNING_KEY_PASSPHRASE}" | dpkg-sig \
   -k $SIGNING_KEY_FINGERPRINT \
