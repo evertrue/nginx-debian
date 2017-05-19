@@ -42,7 +42,7 @@ dpkg-sig \
 /opt/rbenv/shims/deb-s3 upload \
   --arch amd64 \
   --sign $SIGNING_KEY_FINGERPRINT \
-  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --batch --no-use-agent" \
+  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
   ../nginx-full_${PACKAGE_VERSION}_amd64.deb
@@ -50,7 +50,7 @@ dpkg-sig \
 /opt/rbenv/shims/deb-s3 upload \
   --arch amd64 \
   --sign $SIGNING_KEY_FINGERPRINT \
-  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --batch --no-use-agent" \
+  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
   ../nginx-common_${PACKAGE_VERSION}_all.deb
