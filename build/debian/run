@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+## KNOWN ISSUE
+#
+# This code results in the signing key passphrase showing up in the build
+# console. To this I say "fuck it." The process for hiding it was so broken
+# and the security implications were minimal. I decided it was not worth the
+# effort. At least it's not in source control.
+
+set -ex
+
+if [ ! -r /secrets/signing_key_passphrase ]; then
+  echo 'File not found: /secrets/signing_key_passphrase'
+  exit 1
+fi
+
+if [ ! -r /secrets/signing_subkey_fingerprint ]; then
+  echo 'File not found: /secrets/signing_subkey_fingerprint'
+  exit 1
+fi
+
+SIGNING_KEY_FINGERPRINT=$(cat /secrets/signing_subkey_fingerprint)
+SIGNING_KEY_PASSPHRASE=$(cat /secrets/signing_key_passphrase)
+
+cd /build
+
+PACKAGE_VERSION=`dpkg-parsechangelog --show-field Version`
+PACKAGE_VERSION_NO_EPOCH=$(echo $PACKAGE_VERSION | sed s/.*:// )
+
+gpg --import /secrets/evertrue_apt_pub.gpg
+gpg --allow-secret-key-import --import /secrets/evertrue_apt_sec.gpg
+
+# Do the build
+dpkg-buildpackage -b -uc
+
+dpkg-sig \
+  -k $SIGNING_KEY_FINGERPRINT \
+  -g "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  --sign evertrue \
+  "$PWD/../nginx-common_${PACKAGE_VERSION}_all.deb"
+
+dpkg-sig \
+  -k $SIGNING_KEY_FINGERPRINT \
+  -g "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  --sign evertrue \
+  "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb"
+
+# # Upload built artifacts to S3
+deb-s3 upload \
+  --arch amd64 \
+  --codename xenial \
+  --sign $SIGNING_KEY_FINGERPRINT \
+  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  --prefix debian-repo \
+  --bucket ops.evertrue.com \
+  "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb"
+
+deb-s3 upload \
+  --arch amd64 \
+  --codename xenial \
+  --sign $SIGNING_KEY_FINGERPRINT \
+  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  --prefix debian-repo \
+  --bucket ops.evertrue.com \
+  "$PWD/../nginx-common_${PACKAGE_VERSION}_amd64.deb"
+
+rm -f "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb" \
+  "$PWD/../nginx-common_${PACKAGE_VERSION}_amd64.deb"

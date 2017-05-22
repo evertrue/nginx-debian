@@ -1,3 +1,10 @@
+nginx (1.4.6-2evertrue2.0) unstable; urgency=medium
+
+  [ Eric Herot ]
+  * Build on U16.04
+
+ -- Eric Herot <eric.herot@evertrue.com>  Mon, 22 May 2017 12:06:25 -0400
+
 nginx (1.4.6-2evertrue1.0) unstable; urgency=medium
 
   [ Eric Herot ]
