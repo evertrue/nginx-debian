@@ -21,7 +21,6 @@ RUN /usr/lib/pbuilder/pbuilder-satisfydepends --control /build/debian/control
 
 # Because of the quirks of `checkinstall` the package needs to be built in
 # the exact location that it will be when it is installed for real.
-RUN mkdir -p /opt/ImageMagick-6
 
 CMD ["/build/debian/run"]
 #CMD ["/bin/bash"]
