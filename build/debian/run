@@ -62,7 +62,7 @@ deb-s3 upload \
   --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
-  "$PWD/../nginx-common_${PACKAGE_VERSION}_amd64.deb"
+  "$PWD/../nginx-common_${PACKAGE_VERSION}_all.deb"
 
 rm -f "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb" \
-  "$PWD/../nginx-common_${PACKAGE_VERSION}_amd64.deb"
+  "$PWD/../nginx-common_${PACKAGE_VERSION}_all.deb"
