@@ -1,12 +1,15 @@
 FROM ubuntu:14.04
 MAINTAINER Evertrue Devops <devops@evertrue.com>
 
-RUN echo 'deb-src http://archive.ubuntu.com/ubuntu/ xenial-updates main restricted' \
+RUN echo 'deb-src http://archive.ubuntu.com/ubuntu/ precise-updates main restricted' \
     > /etc/apt/sources.list.d/restricted.list
+RUN echo 'deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu precise main' \
+    > /etc/apt/sources.list.d/brightbox-ruby.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv C3173AA6
 
 RUN apt-get -y update && \
-    apt-get install -y apt-utils aptitude pbuilder ruby2.3 ruby2.3-dev libzip-dev build-essential \
-    checkinstall dpkg-sig
+  apt-get install -y apt-utils aptitude pbuilder ruby2.3 ruby2.3-dev libzip-dev build-essential \
+  checkinstall dpkg-sig
 RUN apt-get -y build-dep nginx
 RUN gem install --no-ri --no-rdoc deb-s3
 
