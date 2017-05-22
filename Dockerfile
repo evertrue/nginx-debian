@@ -5,7 +5,7 @@ RUN echo 'deb-src http://archive.ubuntu.com/ubuntu/ xenial-updates main restrict
     > /etc/apt/sources.list.d/restricted.list
 
 RUN apt-get -y update && \
-    apt-get install -y apt-utils aptitude pbuilder libzip-dev build-essential \
+    apt-get install -y apt-utils aptitude pbuilder ruby2.3 ruby2.3-dev libzip-dev build-essential \
     checkinstall dpkg-sig
 RUN apt-get -y build-dep nginx
 RUN gem install --no-ri --no-rdoc deb-s3
