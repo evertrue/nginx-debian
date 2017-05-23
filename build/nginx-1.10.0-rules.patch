@@ -1,0 +1,38 @@
+*** rules	Tue Apr 26 14:51:14 2016
+--- rules.new	Tue May 23 20:38:14 2017
+*************** full_configure_flags := \
+*** 102,108 ****
+  			--add-module=$(MODULESDIR)/nginx-dav-ext-module \
+  			--add-module=$(MODULESDIR)/nginx-echo \
+  			--add-module=$(MODULESDIR)/nginx-upstream-fair \
+! 			--add-module=$(MODULESDIR)/ngx_http_substitutions_filter_module
+  
+  extras_configure_flags := \
+  			$(common_configure_flags) \
+--- 102,109 ----
+  			--add-module=$(MODULESDIR)/nginx-dav-ext-module \
+  			--add-module=$(MODULESDIR)/nginx-echo \
+  			--add-module=$(MODULESDIR)/nginx-upstream-fair \
+! 			--add-module=$(MODULESDIR)/ngx_http_substitutions_filter_module \
+! 			--add-module=$(MODULESDIR)/nginx_upstream_check_module
+  
+  extras_configure_flags := \
+  			$(common_configure_flags) \
+*************** extras_configure_flags := \
+*** 136,142 ****
+  			--add-module=$(MODULESDIR)/nginx-lua \
+  			--add-module=$(MODULESDIR)/nginx-upload-progress \
+  			--add-module=$(MODULESDIR)/nginx-upstream-fair \
+! 			--add-module=$(MODULESDIR)/ngx_http_substitutions_filter_module
+  
+  %:
+  	dh $@ --with systemd
+--- 137,144 ----
+  			--add-module=$(MODULESDIR)/nginx-lua \
+  			--add-module=$(MODULESDIR)/nginx-upload-progress \
+  			--add-module=$(MODULESDIR)/nginx-upstream-fair \
+! 			--add-module=$(MODULESDIR)/ngx_http_substitutions_filter_module \
+! 			--add-module=$(MODULESDIR)/nginx_upstream_check_module
+  
+  %:
+  	dh $@ --with systemd

@@ -1,0 +1,22 @@
+*** rules	Thu Mar 13 00:28:49 2014
+--- rules.new	Tue May 23 21:17:57 2017
+*************** config.status.full: config.env.full
+*** 98,103 ****
+--- 98,104 ----
+  	    --add-module=$(MODULESDIR)/nginx-echo \
+  	    --add-module=$(MODULESDIR)/nginx-upstream-fair \
+  	    --add-module=$(MODULESDIR)/ngx_http_substitutions_filter_module \
++ 	    --add-module=$(MODULESDIR)/nginx_upstream_check_module \
+              >$@
+  	touch $@
+  
+*************** config.status.extras: config.env.extras
+*** 150,155 ****
+--- 151,157 ----
+  	    --add-module=$(MODULESDIR)/nginx-upload-progress \
+  	    --add-module=$(MODULESDIR)/nginx-upstream-fair \
+  	    --add-module=$(MODULESDIR)/ngx_http_substitutions_filter_module \
++ 	    --add-module=$(MODULESDIR)/nginx_upstream_check_module \
+              >$@
+  	touch $@
+  

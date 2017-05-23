@@ -1,26 +1,33 @@
 FROM ubuntu:16.04
 MAINTAINER Evertrue Devops <devops@evertrue.com>
 
+ENV NGINX_PACKAGE_VERSION="1.10.0-0ubuntu0.16.04.4"
+ENV PATCH_VERSION="1.9.2"
+ENV NGINX_MODULE_REF="2bbab543da520af869a2ae6f9c3f9afef23cfdfb"
+
 RUN echo 'deb-src http://archive.ubuntu.com/ubuntu/ xenial-updates main restricted' \
     > /etc/apt/sources.list.d/restricted.list
 
-RUN apt-get -y update && \
-    apt-get install -y apt-utils aptitude pbuilder ruby2.3 ruby2.3-dev libzip-dev build-essential \
-    checkinstall dpkg-sig
+RUN apt-get -y update
+RUN apt-get install -y dpkg-sig apt-utils aptitude pbuilder build-essential ruby2.3 ruby2.3-dev curl
 RUN apt-get -y build-dep nginx
 RUN gem install --no-ri --no-rdoc deb-s3
-
-COPY build /build
 
 RUN mkdir /root/.gnupg
 COPY gpg.conf /root/.gnupg/gpg.conf
 
+RUN mkdir /build
+
 WORKDIR /build
 
-RUN /usr/lib/pbuilder/pbuilder-satisfydepends --control /build/debian/control
+RUN apt-get source -y nginx=$NGINX_PACKAGE_VERSION
+
+RUN /usr/lib/pbuilder/pbuilder-satisfydepends --control /build/nginx-$NGINX_PACKAGE_VERSION/debian/control
+
+COPY build /build
 
 # Because of the quirks of `checkinstall` the package needs to be built in
 # the exact location that it will be when it is installed for real.
 
-CMD ["/build/debian/run"]
-#CMD ["/bin/bash"]
+CMD ["/build/run"]
+# CMD ["/bin/bash"]
