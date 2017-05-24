@@ -32,13 +32,12 @@ package_dir=/build/nginx-$upstream_version
 
 cd $package_dir
 
-PACKAGE_VERSION=`dpkg-parsechangelog --show-field Version`
-PACKAGE_VERSION_NO_EPOCH=$(echo $PACKAGE_VERSION | sed s/.*:// )
+evertrue_package_version="$upstream_version-$(cat /build/EVERTRUE_RELEASE)"
 
 # Build the silly changelog
 
 cat > $package_dir/debian/changelog.new << EOF
-nginx ($PACKAGE_VERSION) xenial; urgency=medium
+nginx ($original_package_version) xenial; urgency=medium
 
 EOF
 
@@ -79,13 +78,13 @@ dpkg-sig \
   -k $SIGNING_KEY_FINGERPRINT \
   -g "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --sign evertrue \
-  "$PWD/../nginx-common_${PACKAGE_VERSION}_all.deb"
+  "$PWD/../nginx-common_${evertrue_package_version}_all.deb"
 
 dpkg-sig \
   -k $SIGNING_KEY_FINGERPRINT \
   -g "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --sign evertrue \
-  "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb"
+  "$PWD/../nginx-full_${evertrue_package_version}_amd64.deb"
 
 # # Upload built artifacts to S3
 deb-s3 upload \
@@ -95,7 +94,7 @@ deb-s3 upload \
   --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
-  "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb"
+  "$PWD/../nginx-full_${evertrue_package_version}_amd64.deb"
 
 deb-s3 upload \
   --arch amd64 \
@@ -104,7 +103,7 @@ deb-s3 upload \
   --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
-  "$PWD/../nginx-common_${PACKAGE_VERSION}_all.deb"
+  "$PWD/../nginx-common_${evertrue_package_version}_all.deb"
 
 rm -f "$PWD/../nginx-full_${PACKAGE_VERSION}_amd64.deb" \
   "$PWD/../nginx-common_${PACKAGE_VERSION}_all.deb"
