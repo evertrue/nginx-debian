@@ -24,8 +24,8 @@ if [ -z "$NGINX_PACKAGE_VERSION" ]; then
   exit 1
 fi
 
-SIGNING_KEY_FINGERPRINT=$(cat /secrets/signing_subkey_fingerprint)
-SIGNING_KEY_PASSPHRASE=$(cat /secrets/signing_key_passphrase)
+signing_key_fingerprint=$(cat /secrets/signing_subkey_fingerprint)
+signing_key_passphrase=$(cat /secrets/signing_key_passphrase)
 
 upstream_version=$(echo $NGINX_PACKAGE_VERSION | cut -f 1 -d '-')
 package_dir=/build/nginx-$upstream_version
@@ -75,14 +75,14 @@ gpg --allow-secret-key-import --import /secrets/evertrue_apt_sec.gpg
 dpkg-buildpackage -b -uc
 
 dpkg-sig \
-  -k $SIGNING_KEY_FINGERPRINT \
-  -g "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  -k $signing_key_fingerprint \
+  -g "--passphrase ${signing_key_passphrase} --digest-algo SHA512 --batch --no-use-agent" \
   --sign evertrue \
   "$PWD/../nginx-common_${evertrue_package_version}_all.deb"
 
 dpkg-sig \
-  -k $SIGNING_KEY_FINGERPRINT \
-  -g "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  -k $signing_key_fingerprint \
+  -g "--passphrase ${signing_key_passphrase} --digest-algo SHA512 --batch --no-use-agent" \
   --sign evertrue \
   "$PWD/../nginx-full_${evertrue_package_version}_amd64.deb"
 
@@ -90,8 +90,8 @@ dpkg-sig \
 deb-s3 upload \
   --arch amd64 \
   --codename xenial \
-  --sign $SIGNING_KEY_FINGERPRINT \
-  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  --sign $signing_key_fingerprint \
+  --gpg-options "--passphrase ${signing_key_passphrase} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
   "$PWD/../nginx-full_${evertrue_package_version}_amd64.deb"
@@ -99,8 +99,8 @@ deb-s3 upload \
 deb-s3 upload \
   --arch amd64 \
   --codename xenial \
-  --sign $SIGNING_KEY_FINGERPRINT \
-  --gpg-options "--passphrase ${SIGNING_KEY_PASSPHRASE} --digest-algo SHA512 --batch --no-use-agent" \
+  --sign $signing_key_fingerprint \
+  --gpg-options "--passphrase ${signing_key_passphrase} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
   --bucket ops.evertrue.com \
   "$PWD/../nginx-common_${evertrue_package_version}_all.deb"
