@@ -47,7 +47,7 @@ evertrue_package_version="$upstream_version-$(cat /build/EVERTRUE_RELEASE)"
 # Build the silly changelog
 
 cat > $package_dir/debian/changelog.new << EOF
-nginx ($original_package_version) xenial; urgency=medium
+nginx ($evertrue_package_version) xenial; urgency=medium
 
 EOF
 
