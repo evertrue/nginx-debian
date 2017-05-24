@@ -38,11 +38,13 @@ signing_key_fingerprint=$(cat /secrets/signing_subkey_fingerprint)
 signing_key_passphrase=$(cat /secrets/signing_key_passphrase)
 
 upstream_version=$(echo $NGINX_PACKAGE_VERSION | cut -f 1 -d '-')
+debian_revision=$(echo $NGINX_PACKAGE_VERSION | cut -f 2 -d '-' | awk -F 'ubuntu' '{print $1}')
 package_dir=/build/nginx-$upstream_version
 
 cd $package_dir
 
-evertrue_package_version="$upstream_version-$(cat /build/EVERTRUE_RELEASE)"
+let new_debian_revision=$debian_revision+1
+evertrue_package_version="$upstream_version-$new_debian_revision$(cat /build/EVERTRUE_RELEASE)"
 
 # Build the silly changelog
 
