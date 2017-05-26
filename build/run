@@ -34,6 +34,11 @@ if [ -z "$PATCH_VERSION" ]; then
   exit 1
 fi
 
+if [ -z "$LSB_CODENAME" ]; then
+  echo 'LSB_CODENAME not set'
+  exit 1
+fi
+
 signing_key_fingerprint=$(cat /secrets/signing_subkey_fingerprint)
 signing_key_passphrase=$(cat /secrets/signing_key_passphrase)
 
@@ -49,7 +54,7 @@ evertrue_package_version="$upstream_version-$new_debian_revision$(cat /build/EVE
 # Build the silly changelog
 
 cat > $package_dir/debian/changelog.new << EOF
-nginx ($evertrue_package_version) xenial; urgency=medium
+nginx ($evertrue_package_version) $LSB_CODENAME; urgency=medium
 
 EOF
 
@@ -101,7 +106,7 @@ dpkg-sig \
 # # Upload built artifacts to S3
 deb-s3 upload \
   --arch amd64 \
-  --codename xenial \
+  --codename $LSB_CODENAME \
   --sign $signing_key_fingerprint \
   --gpg-options "--passphrase ${signing_key_passphrase} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \
@@ -110,7 +115,7 @@ deb-s3 upload \
 
 deb-s3 upload \
   --arch amd64 \
-  --codename xenial \
+  --codename $LSB_CODENAME \
   --sign $signing_key_fingerprint \
   --gpg-options "--passphrase ${signing_key_passphrase} --digest-algo SHA512 --batch --no-use-agent" \
   --prefix debian-repo \

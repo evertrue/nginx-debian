@@ -4,6 +4,7 @@ MAINTAINER Evertrue Devops <devops@evertrue.com>
 ENV NGINX_PACKAGE_VERSION="1.10.0-0ubuntu0.16.04.4"
 ENV PATCH_VERSION="1.9.2"
 ENV NGINX_MODULE_REF="2bbab543da520af869a2ae6f9c3f9afef23cfdfb"
+ENV LSB_CODENAME="xenial"
 
 RUN echo 'deb-src http://archive.ubuntu.com/ubuntu/ xenial-updates main restricted' \
     > /etc/apt/sources.list.d/restricted.list
