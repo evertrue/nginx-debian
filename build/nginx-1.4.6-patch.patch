@@ -1,0 +1,125 @@
+*** debian/patches/nginx_upstream_check_module.patch	2017-05-26 15:52:49.000000000 -0400
+--- debian/patches/nginx_upstream_check_module.patch.new	2017-05-26 15:51:49.000000000 -0400
+*************** index 4b78cff..f077b46 100644
+*** 97,105 ****
+  +#include "ngx_http_upstream_check_module.h"
+  +#endif
+   
+!  static ngx_int_t ngx_http_upstream_cmp_servers(const void *one,
+!      const void *two);
+! @@ -87,7 +90,17 @@ ngx_http_upstream_init_round_robin(ngx_conf_t *cf,
+                   peers->peer[n].weight = server[i].weight;
+                   peers->peer[n].effective_weight = server[i].weight;
+                   peers->peer[n].current_weight = 0;
+--- 97,105 ----
+  +#include "ngx_http_upstream_check_module.h"
+  +#endif
+   
+!  static ngx_http_upstream_rr_peer_t *ngx_http_upstream_get_peer(
+!      ngx_http_upstream_rr_peer_data_t *rrp);
+! @@ -85,7 +88,17 @@ ngx_http_upstream_init_round_robin(ngx_conf_t *cf,
+                   peers->peer[n].weight = server[i].weight;
+                   peers->peer[n].effective_weight = server[i].weight;
+                   peers->peer[n].current_weight = 0;
+*************** index 4b78cff..f077b46 100644
+*** 118,124 ****
+               }
+           }
+   
+! @@ -145,6 +158,17 @@ ngx_http_upstream_init_round_robin(ngx_conf_t *cf,
+                   backup->peer[n].max_fails = server[i].max_fails;
+                   backup->peer[n].fail_timeout = server[i].fail_timeout;
+                   backup->peer[n].down = server[i].down;
+--- 118,124 ----
+               }
+           }
+   
+! @@ -139,6 +152,17 @@ ngx_http_upstream_init_round_robin(ngx_conf_t *cf,
+                   backup->peer[n].max_fails = server[i].max_fails;
+                   backup->peer[n].fail_timeout = server[i].fail_timeout;
+                   backup->peer[n].down = server[i].down;
+*************** index 4b78cff..f077b46 100644
+*** 136,142 ****
+                   n++;
+               }
+           }
+! @@ -206,6 +230,9 @@ ngx_http_upstream_init_round_robin(ngx_conf_t *cf,
+           peers->peer[i].current_weight = 0;
+           peers->peer[i].max_fails = 1;
+           peers->peer[i].fail_timeout = 10;
+--- 136,142 ----
+                   n++;
+               }
+           }
+! @@ -196,6 +220,9 @@ ngx_http_upstream_init_round_robin(ngx_conf_t *cf,
+           peers->peer[i].current_weight = 0;
+           peers->peer[i].max_fails = 1;
+           peers->peer[i].fail_timeout = 10;
+*************** index 4b78cff..f077b46 100644
+*** 146,152 ****
+       }
+   
+       us->peer.data = peers;
+! @@ -323,6 +350,9 @@ ngx_http_upstream_create_round_robin_peer(ngx_http_request_t *r,
+           peers->peer[0].current_weight = 0;
+           peers->peer[0].max_fails = 1;
+           peers->peer[0].fail_timeout = 10;
+--- 146,152 ----
+       }
+   
+       us->peer.data = peers;
+! @@ -301,6 +328,9 @@ ngx_http_upstream_create_round_robin_peer(ngx_http_request_t *r,
+           peers->peer[0].current_weight = 0;
+           peers->peer[0].max_fails = 1;
+           peers->peer[0].fail_timeout = 10;
+*************** index 4b78cff..f077b46 100644
+*** 156,162 ****
+   
+       } else {
+   
+! @@ -356,6 +386,9 @@ ngx_http_upstream_create_round_robin_peer(ngx_http_request_t *r,
+               peers->peer[i].current_weight = 0;
+               peers->peer[i].max_fails = 1;
+               peers->peer[i].fail_timeout = 10;
+--- 156,162 ----
+   
+       } else {
+   
+! @@ -334,6 +364,9 @@ ngx_http_upstream_create_round_robin_peer(ngx_http_request_t *r,
+               peers->peer[i].current_weight = 0;
+               peers->peer[i].max_fails = 1;
+               peers->peer[i].fail_timeout = 10;
+*************** index 4b78cff..f077b46 100644
+*** 166,172 ****
+           }
+       }
+   
+! @@ -434,6 +467,12 @@ ngx_http_upstream_get_round_robin_peer(ngx_peer_connection_t *pc, void *data)
+               goto failed;
+           }
+   
+--- 166,172 ----
+           }
+       }
+   
+! @@ -391,6 +424,12 @@ ngx_http_upstream_get_round_robin_peer(ngx_peer_connection_t *pc, void *data)
+               goto failed;
+           }
+   
+*************** index 4b78cff..f077b46 100644
+*** 179,185 ****
+       } else {
+   
+           /* there are several peers */
+! @@ -531,6 +570,12 @@ ngx_http_upstream_get_peer(ngx_http_upstream_rr_peer_data_t *rrp)
+               continue;
+           }
+   
+--- 179,185 ----
+       } else {
+   
+           /* there are several peers */
+! @@ -490,6 +529,12 @@ ngx_http_upstream_get_peer(ngx_http_upstream_rr_peer_data_t *rrp)
+               continue;
+           }
+   

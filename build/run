@@ -85,6 +85,11 @@ mv $package_dir/debian/modules/nginx_upstream_check_module/check_$PATCH_VERSION+
   $package_dir/debian/patches/nginx_upstream_check_module.patch
 echo "nginx_upstream_check_module.patch" >> $package_dir/debian/patches/series
 
+# Patch the patch -- for some reason modifications are needed in order for this patch to apply
+if [ -f /build/nginx-$upstream_version-patch.patch ]; then
+  patch -p0 < /build/nginx-$upstream_version-patch.patch
+fi
+
 gpg --import /secrets/evertrue_apt_pub.gpg
 gpg --allow-secret-key-import --import /secrets/evertrue_apt_sec.gpg
 
