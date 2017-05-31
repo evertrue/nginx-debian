@@ -95,7 +95,7 @@ patch -p0 < $package_dir/debian/patches/nginx_upstream_check_module.patch
 gpg --import /secrets/evertrue_apt_pub.gpg
 gpg --allow-secret-key-import --import /secrets/evertrue_apt_sec.gpg
 
-# Do the build
+# Do the build (TODO: Consider switching to debuild)
 dpkg-buildpackage -b -uc
 
 dpkg-sig \
