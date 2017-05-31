@@ -90,7 +90,17 @@ if [ -f /build/nginx-$upstream_version-patch.patch ]; then
   patch -p0 < /build/nginx-$upstream_version-patch.patch
 fi
 
-patch -p0 < $package_dir/debian/patches/nginx_upstream_check_module.patch
+patch_file=$package_dir/debian/patches/nginx_upstream_check_module.patch
+
+# For some stupid reason nginx_upstream_check_module could not manage to normalize the
+# patch level across versions so we have to try to detect it.
+if grep -q '^--- a\/' $patch_file && grep -q '^+++ b\/' $patch_file; then
+  patch_level=1
+else
+  patch_level=0
+fi
+
+patch -p$patch_level < $patch_file
 
 gpg --import /secrets/evertrue_apt_pub.gpg
 gpg --allow-secret-key-import --import /secrets/evertrue_apt_sec.gpg
