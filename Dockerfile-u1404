@@ -1,7 +1,7 @@
 FROM ubuntu:14.04
 MAINTAINER Evertrue Devops <devops@evertrue.com>
 
-ENV NGINX_PACKAGE_VERSION="1.4.6-1ubuntu3.7"
+ENV NGINX_PACKAGE_VERSION="1.4.6-1ubuntu3.8"
 ENV PATCH_VERSION="1.2.6"
 ENV NGINX_MODULE_REF="2bbab543da520af869a2ae6f9c3f9afef23cfdfb"
 ENV LSB_CODENAME="trusty"
